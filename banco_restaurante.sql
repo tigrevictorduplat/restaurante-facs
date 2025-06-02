@@ -43,7 +43,7 @@ CREATE TABLE `tb_reservas` (
   `dataReserva` date NOT NULL,
   `horaReserva` time NOT NULL,
   `nomeCliente` varchar(255) NOT NULL,
-  `quatidadePessoas` int(20) NOT NULL,
+  `quantidadePessoas` int(20) NOT NULL,
   `statusReservaConfirmada` tinyint(1) NOT NULL DEFAULT 0,
   `idMesaReserva` int(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -83,7 +83,7 @@ CREATE TABLE `vw_reservas_por_mesa` (
 ,`horaReserva` time
 ,`idMesaReserva` int(100)
 ,`nomeCliente` varchar(255)
-,`quatidadePessoas` int(20)
+,`quantidadePessoas` int(20)
 ,`statusReservaConfirmada` tinyint(1)
 );
 
@@ -112,7 +112,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `vw_reservas_por_mesa`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_reservas_por_mesa`  AS SELECT `tb_reservas`.`idReserva` AS `idReserva`, `tb_reservas`.`dataReserva` AS `dataReserva`, `tb_reservas`.`horaReserva` AS `horaReserva`, `tb_reservas`.`idMesaReserva` AS `idMesaReserva`, `tb_reservas`.`nomeCliente` AS `nomeCliente`, `tb_reservas`.`quatidadePessoas` AS `quatidadePessoas`, `tb_reservas`.`statusReservaConfirmada` AS `statusReservaConfirmada` FROM `tb_reservas` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_reservas_por_mesa`  AS SELECT `tb_reservas`.`idReserva` AS `idReserva`, `tb_reservas`.`dataReserva` AS `dataReserva`, `tb_reservas`.`horaReserva` AS `horaReserva`, `tb_reservas`.`idMesaReserva` AS `idMesaReserva`, `tb_reservas`.`nomeCliente` AS `nomeCliente`, `tb_reservas`.`quantidadePessoas` AS `quantidadePessoas`, `tb_reservas`.`statusReservaConfirmada` AS `statusReservaConfirmada` FROM `tb_reservas` ;
 
 --
 -- Índices para tabelas despejadas
