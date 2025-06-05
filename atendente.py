@@ -6,6 +6,7 @@ API_BASE_URL = "http://127.0.0.1:5000"
 
 def _fazer_requisicao(method, endpoint, data=None, params=None):
     """Função auxiliar para fazer requisições HTTP e tratar respostas/erros."""
+    response = None  # Inicializa response para evitar erro 'unbound'
     try:
         url = f"{API_BASE_URL}{endpoint}"
         if method == "POST":
@@ -26,8 +27,11 @@ def _fazer_requisicao(method, endpoint, data=None, params=None):
     except requests.exceptions.HTTPError as http_err:
         print(f"\nErro HTTP: {http_err}")
         try:
-            error_details = response.json()
-            print(f"Detalhes do erro da API: {json.dumps(error_details, indent=2, ensure_ascii=False)}")
+            if response is not None:
+                error_details = response.json()
+                print(f"Detalhes do erro da API: {json.dumps(error_details, indent=2, ensure_ascii=False)}")
+            else:
+                print("Resposta não disponível para decodificação.")
         except json.JSONDecodeError:
             print("Não foi possível decodificar a resposta de erro como JSON.")
     except requests.exceptions.ConnectionError as conn_err:
