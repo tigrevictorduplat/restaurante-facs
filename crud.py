@@ -1,4 +1,5 @@
 import mysql.connector
+import datetime
 
 def conectar_banco():
     return mysql.connector.connect(
@@ -8,9 +9,9 @@ def conectar_banco():
         database='banco_restaurante',
     )
 
-def criar_reserva_db(cursor, dataReserva, horaReserva, idMesaReserva, quantidadePessoas, nomeCliente):
-    sql = "INSERT INTO tb_reservas (dataReserva, horaReserva, idMesaReserva, nomeCliente, quantidadePessoas, statusReservaConfirmada) VALUES (%s, %s, %s, %s, %s, 0)"
-    cursor.execute(sql, (dataReserva, horaReserva, idMesaReserva, nomeCliente, quantidadePessoas, 0))
+def criar_reserva_db(cursor, dataReserva, horaReserva, nomeCliente, quantidadePessoas, idMesaReserva):
+    sql = "INSERT INTO tb_reservas (dataReserva, horaReserva, nomeCliente, quantidadePessoas, statusReservaConfirmada, idMesaReserva) VALUES (%s, %s, %s, %s, 0, %s)"
+    cursor.execute(sql, (dataReserva, horaReserva, nomeCliente, quantidadePessoas, idMesaReserva))
     return cursor.lastrowid
 
 def verificar_mesa_reservada_db(cursor, idMesaReserva, dataReserva, horaReserva):
@@ -34,9 +35,29 @@ def obter_relatorio_reservas_por_periodo_status_db(cursor, data_inicio, data_fim
     return cursor.fetchall()
 
 def obter_reservas_por_mesa_relatorio_db(cursor, idMesa):
-    sql = "SELECT * FROM vw_reservas_por_mesa WHERE idMesaReserva = %s"
+    sql = "SELECT idReserva, dataReserva, horaReserva, idMesaReserva, nomeCliente, quantidadePessoas, statusReservaConfirmada FROM vw_reservas_por_mesa WHERE idMesaReserva = %s"
     cursor.execute(sql, (idMesa,))
-    return cursor.fetchall()
+    
+    # Obter os nomes das colunas para criar dicionários mais úteis
+    # Isso é bom para JSON, pois os dicionários são mais fáceis de consumir do que tuplas
+    colunas = [i[0] for i in cursor.description]
+    resultados = []
+    for linha in cursor.fetchall():
+        registro = {}
+        for i, valor in enumerate(linha):
+            if isinstance(valor, (datetime.date, datetime.datetime)):
+                registro[colunas[i]] = valor.isoformat() # Converte data/datetime para string ISO
+            elif isinstance(valor, datetime.timedelta):
+                # Formata timedelta para string HH:MM:SS
+                total_seconds = int(valor.total_seconds())
+                hours, remainder = divmod(total_seconds, 3600)
+                minutes, seconds = divmod(remainder, 60)
+                registro[colunas[i]] = f"{hours:02}:{minutes:02}:{seconds:02}"
+            else:
+                registro[colunas[i]] = valor
+        resultados.append(registro)
+        
+    return resultados
 
 def obter_mesas_confirmadas_relatorio_db(cursor):
     sql = "SELECT idMesa, totalConfirmacoes FROM vw_confirmacoes_por_mesa"

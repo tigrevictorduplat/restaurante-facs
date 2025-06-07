@@ -9,9 +9,10 @@ def criar_nova_reserva():
     data = request.get_json()
     dataReserva = data.get('dataReserva')
     horaReserva = data.get('horaReserva')
-    idMesaReserva = data.get('idMesaReserva')
-    quantidadePessoas = data.get('quantidadePessoas')
     nomeCliente = data.get('nomeCliente')
+    quantidadePessoas = data.get('quantidadePessoas')
+    idMesaReserva = data.get('idMesaReserva')
+    
 
     if not all([dataReserva, horaReserva, idMesaReserva, quantidadePessoas, nomeCliente]):
         return jsonify({'erro': 'Todos os campos são obrigatórios'}), 400
@@ -20,7 +21,7 @@ def criar_nova_reserva():
     if mesa_reservada:
         return jsonify({'erro': 'Mesa já reservada para esta data e hora'}), 409
 
-    reserva_id = criar_reserva(dataReserva, horaReserva, idMesaReserva, quantidadePessoas, nomeCliente)
+    reserva_id = criar_reserva(dataReserva, horaReserva, nomeCliente, quantidadePessoas, idMesaReserva)
     return jsonify({'mensagem': 'Reserva criada com sucesso', 'idReserva': reserva_id}), 201
 
 # ------------- @route/atendente/cancelar_reserva ---------------------- #
@@ -72,4 +73,4 @@ def relatorio_mesas_confirmadas():
         return jsonify({'mensagem': 'Não há mesas com reservas confirmadas'}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)    
+    app.run(debug=True  )    

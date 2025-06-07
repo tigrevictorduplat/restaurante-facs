@@ -48,23 +48,22 @@ def criar_nova_reserva():
     print("\n--- Criar Nova Reserva ---")
     data_reserva = input("1. Digite a data da reserva (YYYY-MM-DD, ex: 2025-12-31): ")
     hora_reserva = input("2. Digite o horário da reserva (HH:MM:SS, ex: 19:30:00): ")
-
+    nome_cliente = input("3. Digite o nome do cliente: ")
     try:
-        id_mesa_reserva = int(input("3. Digite o número da mesa: "))
-        quantidade_pessoas = int(input("4. Digite a quantidade de pessoas: "))
+        id_mesa_reserva = int(input("4. Digite o número da mesa: "))
+        quantidade_pessoas = int(input("5. Digite a quantidade de pessoas: "))
     except ValueError:
         print("Erro: O número da mesa e a quantidade de pessoas devem ser números inteiros.")
         return
 
-    nome_cliente = input("5. Digite o nome do cliente: ")
-
     payload = {
         "dataReserva": data_reserva,
         "horaReserva": hora_reserva,
-        "idMesaReserva": id_mesa_reserva,
+        "nomeCliente": nome_cliente,
         "quantidadePessoas": quantidade_pessoas,
-        "nomeCliente": nome_cliente 
+        "idMesaReserva": id_mesa_reserva
     }
+
 
     _fazer_requisicao("POST", "/atendente/criar_reserva", data=payload)
 
