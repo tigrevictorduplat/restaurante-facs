@@ -1,6 +1,8 @@
 import requests
 import json
 
+from utils import separarLinha
+
 # URL base da sua API Flask. Se estiver rodando no Replit, substitua por sua URL do Repl.
 API_BASE_URL = "http://127.0.0.1:5000"
 
@@ -75,18 +77,24 @@ def exibir_menu_gerente():
         print("4. Sair")
 
         opcao = input("Escolha uma opção: ")
+        separarLinha()
 
         if opcao == "1":
             relatorio_reservas_por_periodo_status()
+            separarLinha()
         elif opcao == "2":
             relatorio_reservas_por_mesa()
+            separarLinha()
         elif opcao == "3":
             relatorio_mesas_confirmadas()
+            separarLinha()
         elif opcao == "4":
             print("Saindo do painel do gerente. Tenha um bom dia!")
+            separarLinha()
             break
         else:
             print("Opção inválida. Por favor, escolha uma opção válida (1, 2, 3 ou 4).")
+            separarLinha()
 
 if __name__ == "__main__":
     exibir_menu_gerente()

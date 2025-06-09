@@ -1,6 +1,8 @@
 import requests
 import json
 
+from utils import separarLinha
+
 # URL base da sua API Flask. Se estiver rodando no Replit, substitua por sua URL do Repl.
 API_BASE_URL = "http://127.0.0.1:5000"
 
@@ -60,14 +62,18 @@ def exibir_menu_garcom():
         print("2. Sair")
 
         opcao = input("Escolha uma opção: ")
+        separarLinha()
 
         if opcao == "1":
             confirmar_reserva_garcom()
+            separarLinha()
         elif opcao == "2":
             print("Saindo do painel do garçom. Bom trabalho!")
+            separarLinha()
             break
         else:
             print("Opção inválida. Por favor, escolha uma opção válida (1 ou 2).")
+            separarLinha()
 
 if __name__ == "__main__":
     exibir_menu_garcom()
