@@ -3,9 +3,9 @@ import datetime
 
 def conectar_banco():
     return mysql.connector.connect(
-        host='localhost',
+        host='db',  # <--- altere de 'localhost' para 'db'
         user='root',
-        password='',
+        password='root',
         database='banco_restaurante',
     )
 
