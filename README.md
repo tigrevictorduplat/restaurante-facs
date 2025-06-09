@@ -54,6 +54,23 @@ Projeto de conexão Cliente-Servidor para gerenciamento de reservas em restauran
    docker-compose down
    ```
 
+## Atualizando a aplicação no Docker
+
+Se houver atualizações no código ou dependências do projeto, siga estes passos para garantir que o Docker utilize a versão mais recente:
+
+1. Pare os containers antigos (se estiverem rodando):
+   ```sh
+   docker compose down
+   ```
+
+2. Reconstrua a imagem e suba novamente os containers:
+   ```sh
+   docker compose up --build
+   ```
+
+> **Importante:**  
+> Sempre utilize o parâmetro `--build` após alterações no código para garantir que as mudanças sejam aplicadas no ambiente Docker.
+
 ## Observações
 
 - O banco de dados é inicializado limpo a cada vez que o container é criado.
