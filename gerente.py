@@ -17,9 +17,44 @@ def _fazer_requisicao_get(endpoint, params=None):
         response_json = response.json()
 
         # Formata a saída JSON de forma mais legível
-        print("\n--- Resposta da API ---")
-        print(json.dumps(response_json, indent=2, ensure_ascii=False))
-        print("---------------------\n")
+        # print("\n--- Resposta da API ---")
+        # print(json.dumps(response_json, indent=2, ensure_ascii=False))
+        # print(response_json[0]["nomeCliente"])
+        # print("---------------------\n")
+        if endpoint.__contains__("/gerente/relatorio_mesa/"):
+            try:
+                for i, item in enumerate(response_json):
+                    if item['statusReservaConfirmada'] == 1:
+                        status = "Confirmada"
+                    else:
+                        status = "Não confirmada"
+                    print(f"Reserva {i+1}")
+                    separarLinha()
+                    print(f"ID da Reserva: {item['idReserva']}\nMesa: {item['idMesaReserva']}\nData e Hora: {item['dataReserva']} / {item['horaReserva']}\nCliente: {item['nomeCliente']}\nQuantidade de pessoas: {item['quantidadePessoas']} Pessoa(s)\nStatus da Reserva: {status}")
+                    separarLinha()
+            except:
+                separarLinha()
+                print(f"Não há reservas para esta mesa")
+        elif endpoint.__contains__('/gerente/relatorio_mesas_confirmadas'):
+            # print(response_json)
+            for item in response_json:
+                if type(item[0]) != int:
+                    separarLinha()
+                    print(f"Não há reservas confirmadas")
+                    return
+                idMesa = item[0]
+                qtdReservas = item[1]
+                print(f"Mesa {idMesa} possui {qtdReservas} reserva(s) confirmada(s)")
+        # elif endpoint.__contains__('/gerente/relatorio_reservas'):
+        #     for item in response_json:
+        #         if type(item[1]) != int:
+        #             separarLinha()
+        #             print(f"Não há reservas durante este período")
+        #             return
+        #         for item in response_json:
+        #             dataReserva = item[0]
+
+
 
     except requests.exceptions.HTTPError as http_err:
         print(f"\nErro HTTP: {http_err}")
@@ -84,7 +119,6 @@ def exibir_menu_gerente():
             separarLinha()
         elif opcao == "2":
             relatorio_reservas_por_mesa()
-            separarLinha()
         elif opcao == "3":
             relatorio_mesas_confirmadas()
             separarLinha()
