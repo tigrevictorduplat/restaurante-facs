@@ -14,6 +14,38 @@ def criar_reserva_db(cursor, dataReserva, horaReserva, nomeCliente, quantidadePe
     cursor.execute(sql, (dataReserva, horaReserva, nomeCliente, quantidadePessoas, idMesaReserva))
     return cursor.lastrowid
 
+# def verificar_disponibilidade_mesa_db(cursor, idMesaReserva, dataReserva, horaReserva):
+#     """
+#     Verifica se a mesa está disponível para reserva na data e hora especificadas.
+#     Considera:
+#     1. Se a mesa existe na tb_mesas.
+#     2. Se a mesa não está marcada como 'ocupada' (statusMesaOcupada = 1).
+#     3. Se não há outra reserva *confirmada* (statusReservaConfirmada = 1) para a mesma mesa na mesma data e hora.
+#     """
+#
+#     # 1. Verificar se a mesa existe e seu status atual
+#     sql_mesa = "SELECT statusMesaOcupada FROM tb_mesas WHERE idMesa = %s"
+#     cursor.execute(sql_mesa, (idMesaReserva,))
+#     mesa_info = cursor.fetchone()
+#
+#     if not mesa_info:
+#         return {'disponivel': False, 'motivo': 'Mesa não encontrada.'}
+#
+#     status_mesa_ocupada = mesa_info[0]
+#     if status_mesa_ocupada == 1:
+#         return {'disponivel': False, 'motivo': 'Mesa está atualmente marcada como ocupada.'}
+#
+#     # 2. Verificar se já existe uma reserva (confirmada ou não) para aquela mesa na data e hora
+#
+#     sql_reserva_existente = "SELECT idReserva FROM tb_reservas WHERE idMesaReserva = %s AND dataReserva = %s AND horaReserva = %s"
+#     cursor.execute(sql_reserva_existente, (idMesaReserva, dataReserva, horaReserva))
+#     reserva_existente = cursor.fetchone()
+#
+#     if reserva_existente:
+#         return {'disponivel': False, 'motivo': 'Já existe uma reserva para esta mesa, data e hora.'}
+#
+#     return {'disponivel': True}
+
 def verificar_disponibilidade_mesa_db(cursor, idMesaReserva, dataReserva, horaReserva):
     """
     Verifica se a mesa está disponível para reserva na data e hora especificadas.
@@ -21,8 +53,9 @@ def verificar_disponibilidade_mesa_db(cursor, idMesaReserva, dataReserva, horaRe
     1. Se a mesa existe na tb_mesas.
     2. Se a mesa não está marcada como 'ocupada' (statusMesaOcupada = 1).
     3. Se não há outra reserva *confirmada* (statusReservaConfirmada = 1) para a mesma mesa na mesma data e hora.
+    4. Se não há outra reserva dentro do intervalo de 2 horas antes ou depois.
     """
-    
+
     # 1. Verificar se a mesa existe e seu status atual
     sql_mesa = "SELECT statusMesaOcupada FROM tb_mesas WHERE idMesa = %s"
     cursor.execute(sql_mesa, (idMesaReserva,))
@@ -36,7 +69,6 @@ def verificar_disponibilidade_mesa_db(cursor, idMesaReserva, dataReserva, horaRe
         return {'disponivel': False, 'motivo': 'Mesa está atualmente marcada como ocupada.'}
 
     # 2. Verificar se já existe uma reserva (confirmada ou não) para aquela mesa na data e hora
-
     sql_reserva_existente = "SELECT idReserva FROM tb_reservas WHERE idMesaReserva = %s AND dataReserva = %s AND horaReserva = %s"
     cursor.execute(sql_reserva_existente, (idMesaReserva, dataReserva, horaReserva))
     reserva_existente = cursor.fetchone()
@@ -44,7 +76,45 @@ def verificar_disponibilidade_mesa_db(cursor, idMesaReserva, dataReserva, horaRe
     if reserva_existente:
         return {'disponivel': False, 'motivo': 'Já existe uma reserva para esta mesa, data e hora.'}
 
+    # 3. Verificar se há reservas dentro do intervalo de 2 horas antes ou depois
+    # Converter horaReserva para datetime para poder calcular o intervalo
+    hora_obj = horaReserva
+    dt_reserva = dataReserva
+
+    # Calcular 2 horas antes e depois
+    dt_inicio = (dt_reserva - datetime.timedelta(hours=2))
+    dt_fim = (dt_reserva + datetime.timedelta(hours=2))
+
+    # Verificar se há reservas no intervalo
+    sql_intervalo = """
+        SELECT idReserva FROM tb_reservas
+        WHERE idMesaReserva = %s
+        AND dataReserva = %s
+        AND (
+            TIME_TO_SEC(horaReserva) BETWEEN TIME_TO_SEC(%s) AND TIME_TO_SEC(%s)
+            OR
+            ABS(TIME_TO_SEC(horaReserva) - TIME_TO_SEC(%s)) <= 7200
+        )
+        """
+    cursor.execute(sql_intervalo,
+                   (idMesaReserva, dataReserva, dt_inicio.strftime('%H:%M:%S'), dt_fim.strftime('%H:%M:%S'),
+                    horaReserva))
+
+    # Imprimir para debug
+    print(f"Verificando reservas para mesa {idMesaReserva} em {dataReserva} entre {dt_inicio} e {dt_fim}")
+    print(f"SQL: {sql_intervalo}")
+    print(
+        f"Parâmetros: {idMesaReserva}, {dataReserva}, {dt_inicio.strftime('%H:%M:%S')}, {dt_fim.strftime('%H:%M:%S')}, {horaReserva}")
+
+    reservas_intervalo = cursor.fetchall()
+    print(f"Reservas encontradas: {reservas_intervalo}")
+
+    if reservas_intervalo:
+        return {'disponivel': False, 'motivo': 'Já existe uma reserva para esta mesa dentro do intervalo de 2 horas.'}
+
     return {'disponivel': True}
+
+
 def cancelar_reserva_db(cursor, idReserva):
     sql = "DELETE FROM tb_reservas WHERE idReserva = %s"
     cursor.execute(sql, (idReserva,))

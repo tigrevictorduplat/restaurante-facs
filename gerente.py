@@ -93,7 +93,7 @@ def relatorio_reservas_por_periodo_status():
 
         _fazer_requisicao_get("/gerente/relatorio_reservas", params=params)
     except ValueError:
-        print("Erro: Formato de data inválido. Use o formato YYYY-MM-DD.")
+        print("\nNão foi possível realizar a busca, formato de data inválido. Use o formato YYYY-MM-DD.")
 
 def relatorio_reservas_por_mesa():
     """Solicita um relatório de reservas para uma mesa específica."""

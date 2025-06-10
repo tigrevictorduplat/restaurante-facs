@@ -100,16 +100,16 @@ def criar_nova_reserva():
     try:
         id_mesa_reserva = int(input("4. Digite o número da mesa (ex: 5): "))
         if id_mesa_reserva <= 0:
-            print("Erro de validação: O número da mesa deve ser um número inteiro positivo.")
+            print("\nErro de validação: O número da mesa deve ser um número inteiro positivo.")
             return
         quantidade_pessoas = int(input("5. Digite a quantidade de pessoas (ex: 2): "))
         # A validação de range (0 < pessoas <= 20) será feita no servidor (app.py),
         # mas podemos adicionar uma pré-validação aqui para feedback rápido.
         if not (0 < quantidade_pessoas <= 20): # Usando 20 como limite Hardcoded no cliente por enquanto
-             print("Erro de validação: A quantidade de pessoas deve ser maior que 0 e menor ou igual a 20.")
+             print("\nErro de validação: A quantidade de pessoas deve ser maior que 0 e menor ou igual a 20.")
              return
     except ValueError:
-        print("Erro de validação: O número da mesa e a quantidade de pessoas devem ser números inteiros válidos.")
+        print("\nErro de validação: O número da mesa e a quantidade de pessoas devem ser números inteiros válidos.")
         return
 
     payload = {
