@@ -1,6 +1,8 @@
 import requests
 import json
 
+from utils import separarLinha
+
 # URL base da sua API Flask. Se estiver rodando no Replit, substitua por sua URL do Repl.
 API_BASE_URL = "http://127.0.0.1:5000"
 
@@ -15,9 +17,43 @@ def _fazer_requisicao_get(endpoint, params=None):
         response_json = response.json()
 
         # Formata a saída JSON de forma mais legível
-        print("\n--- Resposta da API ---")
-        print(json.dumps(response_json, indent=2, ensure_ascii=False))
-        print("---------------------\n")
+        if endpoint.__contains__("/gerente/relatorio_mesa/"):
+            try:
+                for i, item in enumerate(response_json):
+                    if item['statusReservaConfirmada'] == 1:
+                        status = "Confirmada"
+                    else:
+                        status = "Não confirmada"
+                    print(f"Reserva {i+1}")
+                    separarLinha()
+                    print(f"ID da Reserva: {item['idReserva']}\nMesa: {item['idMesaReserva']}\nData e Hora: {item['dataReserva']} / {item['horaReserva']}\nCliente: {item['nomeCliente']}\nQuantidade de pessoas: {item['quantidadePessoas']} Pessoa(s)\nStatus da Reserva: {status}")
+                    separarLinha()
+            except Exception:
+                separarLinha()
+                print(f"Não há reservas para esta mesa")
+        elif endpoint.__contains__('/gerente/relatorio_mesas_confirmadas'):
+            if isinstance(response_json, dict) and 'mensagem' in response_json:
+                separarLinha()
+                print(response_json.get('mensagem', 'Sem mensagem'))
+                return
+            for item in response_json:
+                if type(item[0]) != int:
+                    separarLinha()
+                    print(f"Não há reservas confirmadas")
+                    return
+                idMesa = item[0]
+                qtdReservas = item[1]
+                print(f"Mesa {idMesa} possui {qtdReservas} reserva(s) confirmada(s)")
+        elif endpoint.__contains__('/gerente/relatorio_reservas'):
+            if isinstance(response_json, dict) and 'mensagem' in response_json:
+                separarLinha()
+                print(response_json.get('mensagem', 'Sem mensagem'))
+                return
+            for item in response_json:
+                dataReserva = item[0]
+                status = "Confirmada" if item[1] == 1 else "Não confirmada"
+                total = item[2]
+                print(f"Data: {dataReserva} | Status: {status} | Total de reservas: {total}")
 
     except requests.exceptions.HTTPError as http_err:
         print(f"\nErro HTTP: {http_err}")
@@ -75,18 +111,23 @@ def exibir_menu_gerente():
         print("4. Sair")
 
         opcao = input("Escolha uma opção: ")
+        separarLinha()
 
         if opcao == "1":
             relatorio_reservas_por_periodo_status()
+            separarLinha()
         elif opcao == "2":
             relatorio_reservas_por_mesa()
         elif opcao == "3":
             relatorio_mesas_confirmadas()
+            separarLinha()
         elif opcao == "4":
             print("Saindo do painel do gerente. Tenha um bom dia!")
+            separarLinha()
             break
         else:
             print("Opção inválida. Por favor, escolha uma opção válida (1, 2, 3 ou 4).")
+            separarLinha()
 
 if __name__ == "__main__":
     exibir_menu_gerente()

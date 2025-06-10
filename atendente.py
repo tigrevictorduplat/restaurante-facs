@@ -1,6 +1,6 @@
 import requests
 import json
-
+from utils import separarLinha
 # URL base da sua API Flask. Se estiver rodando no Replit, substitua por sua URL do Repl.
 API_BASE_URL = "http://127.0.0.1:5000"
 
@@ -20,9 +20,11 @@ def _fazer_requisicao(method, endpoint, data=None, params=None):
         response_json = response.json()
 
         # Formata a saída JSON de forma mais legível
-        print("\n--- Resposta da API ---")
-        print(json.dumps(response_json, indent=2, ensure_ascii=False))
-        print("---------------------\n")
+        if endpoint.__contains__('/atendente/cancelar_reserva/'):
+            print(f"\n{response_json.get('mensagem', 'Sem mensagem')}")
+        elif endpoint.__contains__('/atendente/criar_reserva'):
+            print(f"\n{response_json.get('mensagem', 'Sem mensagem')}\nID da reserva: {response_json.get('idReserva', 'N/A')}")
+
 
     except requests.exceptions.HTTPError as http_err:
         print(f"\nErro HTTP: {http_err}")
@@ -87,16 +89,21 @@ def exibir_menu_atendente():
         print("3. Sair")
 
         opcao = input("Escolha uma opção: ")
+        separarLinha()
 
         if opcao == "1":
             criar_nova_reserva()
+            separarLinha()
         elif opcao == "2":
             cancelar_reserva_existente()
+            separarLinha()
         elif opcao == "3":
             print("Saindo do painel do atendente. Até mais!")
+            separarLinha()
             break
         else:
             print("Opção inválida. Por favor, escolha uma opção válida (1, 2 ou 3).")
+            separarLinha()
 
 if __name__ == "__main__":
     exibir_menu_atendente()
