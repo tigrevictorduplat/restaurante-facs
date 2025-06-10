@@ -14,11 +14,37 @@ def criar_reserva_db(cursor, dataReserva, horaReserva, nomeCliente, quantidadePe
     cursor.execute(sql, (dataReserva, horaReserva, nomeCliente, quantidadePessoas, idMesaReserva))
     return cursor.lastrowid
 
-def verificar_mesa_reservada_db(cursor, idMesaReserva, dataReserva, horaReserva):
-    sql = "SELECT idReserva FROM tb_reservas WHERE idMesaReserva = %s AND dataReserva = %s AND horaReserva = %s"
-    cursor.execute(sql, (idMesaReserva, dataReserva, horaReserva))
-    return cursor.fetchone()
+def verificar_disponibilidade_mesa_db(cursor, idMesaReserva, dataReserva, horaReserva):
+    """
+    Verifica se a mesa está disponível para reserva na data e hora especificadas.
+    Considera:
+    1. Se a mesa existe na tb_mesas.
+    2. Se a mesa não está marcada como 'ocupada' (statusMesaOcupada = 1).
+    3. Se não há outra reserva *confirmada* (statusReservaConfirmada = 1) para a mesma mesa na mesma data e hora.
+    """
+    
+    # 1. Verificar se a mesa existe e seu status atual
+    sql_mesa = "SELECT statusMesaOcupada FROM tb_mesas WHERE idMesa = %s"
+    cursor.execute(sql_mesa, (idMesaReserva,))
+    mesa_info = cursor.fetchone()
 
+    if not mesa_info:
+        return {'disponivel': False, 'motivo': 'Mesa não encontrada.'}
+
+    status_mesa_ocupada = mesa_info[0]
+    if status_mesa_ocupada == 1:
+        return {'disponivel': False, 'motivo': 'Mesa está atualmente marcada como ocupada.'}
+
+    # 2. Verificar se já existe uma reserva (confirmada ou não) para aquela mesa na data e hora
+
+    sql_reserva_existente = "SELECT idReserva FROM tb_reservas WHERE idMesaReserva = %s AND dataReserva = %s AND horaReserva = %s"
+    cursor.execute(sql_reserva_existente, (idMesaReserva, dataReserva, horaReserva))
+    reserva_existente = cursor.fetchone()
+
+    if reserva_existente:
+        return {'disponivel': False, 'motivo': 'Já existe uma reserva para esta mesa, data e hora.'}
+
+    return {'disponivel': True}
 def cancelar_reserva_db(cursor, idReserva):
     sql = "DELETE FROM tb_reservas WHERE idReserva = %s"
     cursor.execute(sql, (idReserva,))
@@ -83,7 +109,7 @@ def executar_query(operacao):
     return wrapper
 
 criar_reserva = executar_query(criar_reserva_db)
-verificar_mesa_reservada = executar_query(verificar_mesa_reservada_db)
+verificar_disponibilidade_mesa = executar_query(verificar_disponibilidade_mesa_db)
 cancelar_reserva = executar_query(cancelar_reserva_db)
 confirmar_reserva = executar_query(confirmar_reserva_db)
 obter_relatorio_reservas_periodo_status = executar_query(obter_relatorio_reservas_por_periodo_status_db)
