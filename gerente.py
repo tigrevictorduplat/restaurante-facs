@@ -1,6 +1,6 @@
 import requests
 import json
-
+from datetime import datetime
 from utils import separarLinha
 
 # URL base da sua API Flask. Se estiver rodando no Replit, substitua por sua URL do Repl.
@@ -30,7 +30,7 @@ def _fazer_requisicao_get(endpoint, params=None):
                     separarLinha()
             except Exception:
                 separarLinha()
-                print(f"Não há reservas para esta mesa")
+                print(f"Não há reservas para esta mesa ou não existe mesa com este ID")
         elif endpoint.__contains__('/gerente/relatorio_mesas_confirmadas'):
             if isinstance(response_json, dict) and 'mensagem' in response_json:
                 separarLinha()
@@ -53,7 +53,7 @@ def _fazer_requisicao_get(endpoint, params=None):
                 dataReserva = item[0]
                 status = "Confirmada" if item[1] == 1 else "Não confirmada"
                 total = item[2]
-                print(f"Data: {dataReserva} | Status: {status} | Total de reservas: {total}")
+                print(f"\nData: {datetime.strptime(dataReserva, '%a, %d %b %Y %H:%M:%S GMT').strftime('%d/%m/%Y')} | Status: {status} | Total de reservas: {total}")
 
     except requests.exceptions.HTTPError as http_err:
         print(f"\nErro HTTP: {http_err}")
@@ -77,13 +77,24 @@ def relatorio_reservas_por_periodo_status():
     print("\n--- Relatório de Reservas por Período e Status ---")
     data_inicio = input("1. Insira a data de início da pesquisa (YYYY-MM-DD): ")
     data_fim = input("2. Insira a data de fim da pesquisa (YYYY-MM-DD): ")
+    try:
+        # Converte as strings para objetos datetime
+        dt_inicio = datetime.strptime(data_inicio, '%Y-%m-%d')
+        dt_fim = datetime.strptime(data_fim, '%Y-%m-%d')
 
-    params = {
-        "data_inicio": data_inicio,
-        "data_fim": data_fim
-    }
+        # Verifica se a data de início é anterior à data de fim
+        if dt_inicio > dt_fim:
+            print("\nNão foi possível realizar a busca, a data de início deve ser anterior à data de fim.")
+            return
 
-    _fazer_requisicao_get("/gerente/relatorio_reservas", params=params)
+        params = {
+            "data_inicio": data_inicio,
+            "data_fim": data_fim
+        }
+
+        _fazer_requisicao_get("/gerente/relatorio_reservas", params=params)
+    except ValueError:
+        print("Erro: Formato de data inválido. Use o formato YYYY-MM-DD.")
 
 def relatorio_reservas_por_mesa():
     """Solicita um relatório de reservas para uma mesa específica."""
