@@ -20,9 +20,15 @@ def _fazer_requisicao(method, endpoint, data=None, params=None):
         response_json = response.json()
 
         # Formata a saída JSON de forma mais legível
-        print("\n--- Resposta da API ---")
-        print(json.dumps(response_json, indent=2, ensure_ascii=False))
-        print("---------------------\n")
+        # print("\n--- Resposta da API ---")
+        # print(json.dumps(response_json, indent=2, ensure_ascii=False))
+        # print("---------------------\n")
+
+        if endpoint.__contains__('/atendente/cancelar_reserva/'):
+            print(f'\n{response_json['mensagem']}')
+        elif endpoint.__contains__('/atendente/criar_reserva'):
+            print(f'\n{response_json['mensagem']}\nID da reserva: {response_json['idReserva']}')
+
 
     except requests.exceptions.HTTPError as http_err:
         print(f"\nErro HTTP: {http_err}")
