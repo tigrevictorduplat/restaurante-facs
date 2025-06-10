@@ -20,18 +20,14 @@ def _fazer_requisicao(method, endpoint, data=None, params=None):
         response_json = response.json()
 
         # Formata a saída JSON de forma mais legível
-        print(f'{response_json['mensagem']}')
-        # print("\n--- Resposta da API ---")
-        # print(json.dumps(response_json, indent=2, ensure_ascii=False))
-        # print("---------------------\n")
+        print(f"\n{response_json.get('mensagem', response_json.get('erro', 'Sem mensagem'))}")
 
     except requests.exceptions.HTTPError as http_err:
-        # print(f"\nErro HTTP: {http_err}")
+        print(f"\nErro HTTP: {http_err}")
         try:
             if response is not None:
-                print('\nNão foi possível encontrar nenhuma reserva com o ID fornecido.')
-                # error_details = response.json()
-                # print(f"Detalhes do erro da API: {json.dumps(error_details, indent=2, ensure_ascii=False)}")
+                error_details = response.json()
+                print(f"Detalhes do erro da API: {json.dumps(error_details, indent=2, ensure_ascii=False)}")
             else:
                 print("Resposta não disponível para decodificação.")
         except json.JSONDecodeError:
