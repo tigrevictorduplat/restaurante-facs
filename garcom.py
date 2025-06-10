@@ -23,11 +23,12 @@ def _fazer_requisicao(method, endpoint, data=None, params=None):
         print(f"\n{response_json.get('mensagem', response_json.get('erro', 'Sem mensagem'))}")
 
     except requests.exceptions.HTTPError as http_err:
-        print(f"\nErro HTTP: {http_err}")
+        # print(f"\nErro HTTP: {http_err}")
         try:
             if response is not None:
                 error_details = response.json()
-                print(f"Detalhes do erro da API: {json.dumps(error_details, indent=2, ensure_ascii=False)}")
+                # print(f"Detalhes do erro da API: {json.dumps(error_details, indent=2, ensure_ascii=False)}")
+                print(f"\n{error_details['erro']}")
             else:
                 print("Resposta não disponível para decodificação.")
         except json.JSONDecodeError:

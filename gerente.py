@@ -24,10 +24,9 @@ def _fazer_requisicao_get(endpoint, params=None):
                         status = "Confirmada"
                     else:
                         status = "Não confirmada"
-                    print(f"Reserva {i+1}")
+                    print(f"\nReserva {i+1}")
                     separarLinha()
-                    print(f"ID da Reserva: {item['idReserva']}\nMesa: {item['idMesaReserva']}\nData e Hora: {item['dataReserva']} / {item['horaReserva']}\nCliente: {item['nomeCliente']}\nQuantidade de pessoas: {item['quantidadePessoas']} Pessoa(s)\nStatus da Reserva: {status}")
-                    separarLinha()
+                    print(f"ID da Reserva: {item['idReserva']}\nMesa: {item['idMesaReserva']}\nData e Hora: {item['dataReserva']} / {item['horaReserva']}\nCliente: {item['nomeCliente']}\nQuantidade de pessoas: {item['quantidadePessoas']} Pessoa(s)\nStatus da Reserva: {status}\n")
             except Exception:
                 separarLinha()
                 print(f"Não há reservas para esta mesa ou não existe mesa com este ID")

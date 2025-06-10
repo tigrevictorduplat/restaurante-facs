@@ -28,11 +28,12 @@ def _fazer_requisicao(method, endpoint, data=None, params=None):
 
 
     except requests.exceptions.HTTPError as http_err:
-        print(f"\nErro HTTP: {http_err}")
+        # print(f"\nErro HTTP: {http_err}")
         try:
             if response is not None:
                 error_details = response.json()
-                print(f"Detalhes do erro da API: {json.dumps(error_details, indent=2, ensure_ascii=False)}")
+                # print(f"Detalhes do erro da API: {json.dumps(error_details, indent=2, ensure_ascii=False)}")
+                print(f"\n{error_details['erro']}")
             else:
                 print("Resposta não disponível para decodificação.")
         except json.JSONDecodeError:
@@ -59,7 +60,7 @@ def validar_e_formatar_data_hora(data_str, hora_str):
         try:
             data_obj = datetime.strptime(data_str, '%Y-%m-%d').date() # Tenta YYYY-MM-DD
         except ValueError:
-            print("Erro de validação: Formato de data inválido. Use DD/MM/YYYY ou YYYY-MM-DD.")
+            print("\nErro de validação: Formato de data inválido. Use DD/MM/YYYY ou YYYY-MM-DD.")
             return None, None
             
     # Valida e formata a hora (ignorando segundos)
@@ -74,7 +75,7 @@ def validar_e_formatar_data_hora(data_str, hora_str):
         else:
             raise ValueError
     except ValueError:
-        print("Erro de validação: Formato de hora inválido. Use HH:MM ou HH:MM:SS.")
+        print("\nErro de validação: Formato de hora inválido. Use HH:MM ou HH:MM:SS.")
         return None, None
     
     return data_obj.isoformat(), hora_obj.strftime('%H:%M:%S')
