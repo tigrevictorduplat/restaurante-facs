@@ -19,8 +19,16 @@ Projeto de conexão Cliente-Servidor para gerenciamento de reservas em restauran
 ## Como rodar com Docker
 
 ### Pré-requisitos
-
+- [Xampp](https://www.apachefriends.org/pt_br/index.html) instalado.
 - [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/) instalados.
+
+## Por que instalar eles?
+O  Xampp será a ferramenta usada como servidor local do banco de dados que será executado no projeto 
+
+O Docker é importante para garantir que a instalação de bibliotecas e dependencias sejam feitas de maneira fácil e eficinte tirando a necessidade do usuário fazer isso manualmente.
+(É válido lembra que em caso do seu sistema operacional for windows, é necessário você fazer a ativação da virtualização na Bios do seu computador, pois o docker é originalmente do linux e precisa emular um sistema linux no windows para funcionar corretamente. A ativação dessa opção na BIOS varia dependendo da marca da sua placa-mãe, mas todos os passos podem ser encontrados no youtube.)
+Ápos verificar tudo, basta fazer login no docker e executar os próximos passos...
+
 
 ### Passos
 
@@ -38,6 +46,8 @@ Projeto de conexão Cliente-Servidor para gerenciamento de reservas em restauran
    Isso irá:
    - Subir um container MySQL com o banco já criado a partir de `banco_restaurante.sql`
    - Subir o backend Flask em outro container, acessível em [http://localhost:5000](http://localhost:5000)
+  
+   # você deve abrir o Xampp e clicar em start nas opções "Apache" e "mySql"
 
 3. **Acesse a aplicação:**
    - Use os scripts `atendente.py`, `garcom.py` e `gerente.py` para interagir via terminal:
