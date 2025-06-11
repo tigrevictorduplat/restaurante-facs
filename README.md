@@ -88,12 +88,17 @@ A escolha da arquitetura e das tecnologias foi estratégica para simular um ambi
 
     -   **Via terminal interativo (recomendado para iniciantes):**
 
-        Para acessar os menus de Atendente, Garçom ou Gerente, use os comandos abaixo em seu **novo terminal**:
-
+        Para acessar o menu centralizado do Restaurante, use o comando abaixo em seu **novo terminal**:
+   
+         ```sh
+            docker-compose exec web python app.py
+         ```
+         Ou especifique caso queira rodar apenas um script cliente (atendente, garçom ou gerente):
+        
         ```sh
-        docker-compose exec web python atendente_script.py
-        docker-compose exec web python garcom_script.py
-        docker-compose exec web python gerente_script.py
+         docker-compose exec web python atendente_script.py
+         docker-compose exec web python garcom_script.py
+         docker-compose exec web python gerente_script.py
         ```
 
         Siga as instruções que aparecerão na tela.
