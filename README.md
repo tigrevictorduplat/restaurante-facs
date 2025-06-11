@@ -2,88 +2,128 @@
 
 Projeto de conexão Cliente-Servidor para gerenciamento de reservas em restaurante.
 
-## Funcionalidades
+---
+
+## 👤 Para Usuários: Instalação e Uso
+
+### Funcionalidades
 
 - **Atendente**: Criar e cancelar reservas de mesas.
 - **Garçom**: Confirmar reservas.
 - **Gerente**: Gerar relatórios de reservas por período, por mesa e de mesas confirmadas.
 
-## Estrutura
-
-- `app.py`: API Flask principal.
-- `crud.py`: Operações de banco de dados MySQL.
-- `atendente.py`, `garcom.py`, `gerente.py`: Interfaces de linha de comando para cada perfil.
-- `banco_restaurante.sql`: Script de criação e popularização do banco de dados.
-- `Dockerfile` e `docker-compose.yml`: Para empacotamento e execução com Docker.
-
-## Como rodar com Docker
-
 ### Pré-requisitos
-- [Xampp](https://www.apachefriends.org/pt_br/index.html) instalado.
-- [Docker](https://www.docker.com/) e [Docker Compose](https://docs.docker.com/compose/) instalados.
 
-## Por que instalar eles?
-O  Xampp será a ferramenta usada como servidor local do banco de dados que será executado no projeto 
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando.
 
-O Docker é importante para garantir que a instalação de bibliotecas e dependencias sejam feitas de maneira fácil e eficinte tirando a necessidade do usuário fazer isso manualmente.
-(É válido lembra que em caso do seu sistema operacional for windows, é necessário você fazer a ativação da virtualização na Bios do seu computador, pois o docker é originalmente do linux e precisa emular um sistema linux no windows para funcionar corretamente. A ativação dessa opção na BIOS varia dependendo da marca da sua placa-mãe, mas todos os passos podem ser encontrados no youtube.)
-Ápos verificar tudo, basta fazer login no docker e executar os próximos passos...
+> **Observação para Windows:**  
+> Certifique-se de que a virtualização está ativada na BIOS do seu computador para que o Docker funcione corretamente.  
+> Procure no YouTube por "como ativar virtualização BIOS [marca do seu computador]" caso tenha dúvidas.
 
+---
 
-### Passos
+### Passo a passo para rodar o sistema
 
-1. **Clone o repositório:**
+1. **Baixe o projeto**
+
+   Abra o terminal (Prompt de Comando, PowerShell ou Terminal do VS Code) e execute:
+
    ```sh
    git clone https://github.com/seu-usuario/restaurante-facs.git
    cd restaurante-facs
    ```
 
-2. **Inicie os containers:**
+2. **Inicie a aplicação**
+
+   No terminal, execute:
+
    ```sh
    docker-compose up --build
    ```
 
-   Isso irá:
-   - Subir um container MySQL com o banco já criado a partir de `banco_restaurante.sql`
-   - Subir o backend Flask em outro container, acessível em [http://localhost:5000](http://localhost:5000)
-  
-   # você deve abrir o Xampp e clicar em start nas opções "Apache" e "mySql"
+   O Docker irá:
+   - Baixar e iniciar um container MySQL, criando o banco de dados automaticamente.
+   - Iniciar a API Flask, disponível em [http://localhost:5000](http://localhost:5000).
 
-3. **Acesse a aplicação:**
-   - Use os scripts `atendente.py`, `garcom.py` e `gerente.py` para interagir via terminal:
+   > **Atenção:** Não abra o XAMPP nem o MySQL local. O Docker já cuida de tudo!
+
+3. **Usando a aplicação**
+
+   Existem duas formas de usar o sistema:
+
+   - **Via terminal interativo (recomendado para iniciantes):**
+
+     Para acessar os menus de Atendente, Garçom ou Gerente, use os comandos abaixo em um novo terminal:
+
      ```sh
      docker-compose exec web python atendente.py
      docker-compose exec web python garcom.py
      docker-compose exec web python gerente.py
      ```
 
-   - Ou faça requisições HTTP para a API Flask.
+     Siga as instruções que aparecerem na tela.
 
-4. **Parar os containers:**
+   - **Via API HTTP (avançado):**
+
+     Você pode usar ferramentas como Postman, Insomnia ou até mesmo o navegador para fazer requisições HTTP para [http://localhost:5000](http://localhost:5000).
+
+4. **Parar a aplicação**
+
+   Para desligar tudo, pressione `CTRL+C` no terminal onde rodou o Docker, depois execute:
+
    ```sh
    docker-compose down
    ```
 
-## Atualizando a aplicação no Docker
+---
 
-Se houver atualizações no código ou dependências do projeto, siga estes passos para garantir que o Docker utilize a versão mais recente:
+### Dicas e Solução de Problemas
 
-1. Pare os containers antigos (se estiverem rodando):
-   ```sh
-   docker compose down
-   ```
+- **Erro de input() no Docker:**  
+  Sempre use `docker-compose exec web python atendente.py` (ou `garcom.py`, `gerente.py`) para rodar scripts interativos. Não tente rodar esses scripts diretamente com `docker-compose up`.
 
-2. Reconstrua a imagem e suba novamente os containers:
-   ```sh
-   docker compose up --build
-   ```
+- **Portas ocupadas:**  
+  Se a porta 3306 (MySQL) ou 5000 (Flask) já estiverem em uso, feche outros programas que possam estar usando essas portas (como XAMPP ou MySQL Workbench).
 
-> **Importante:**  
-> Sempre utilize o parâmetro `--build` após alterações no código para garantir que as mudanças sejam aplicadas no ambiente Docker.
+- **Banco de dados limpo:**  
+  O banco é recriado toda vez que o container é iniciado do zero. Para manter os dados entre execuções, adapte o volume do serviço `db` no `docker-compose.yml`.
 
-## Observações
+---
 
-- O banco de dados é inicializado limpo a cada vez que o container é criado.
-- Para persistência de dados, adapte o volume do serviço `db` no `docker-compose.yml`.
+## 👩‍💻 Para Colaboradores/Desenvolvedores
+
+### Estrutura dos Arquivos
+
+- `server.py`: API Flask principal (backend HTTP).
+- `crud.py`: Operações de banco de dados MySQL.
+- `atendente.py`, `garcom.py`, `gerente.py`: Interfaces de linha de comando para cada perfil.
+- `banco_restaurante.sql`: Script de criação e popularização do banco de dados.
+- `Dockerfile` e `docker-compose.yml`: Para empacotamento e execução com Docker.
+- `requirements.txt`: Lista de dependências Python.
+
+### Atualizando a aplicação
+
+Se atualizar algum arquivo do projeto (código, dependências, scripts SQL), rode:
+
+```sh
+docker-compose down
+docker-compose up --build
+```
+
+O parâmetro `--build` garante que o Docker irá reconstruir a imagem com as alterações feitas no seu projeto.
+
+### Boas práticas para desenvolvimento
+
+- Sempre teste suas alterações localmente usando Docker antes de enviar para o repositório.
+- Se adicionar novas dependências Python, lembre-se de atualizar o `requirements.txt`:
+  ```sh
+  pip freeze > requirements.txt
+  ```
+- Prefira usar variáveis de ambiente para credenciais e configurações sensíveis.
+- Documente suas alterações no código e, se possível, atualize este README.
+
+---
+
+Se tiver dúvidas, procure por "Como instalar o Docker Desktop" no YouTube ou consulte a documentação oficial do Docker.
 
 ---

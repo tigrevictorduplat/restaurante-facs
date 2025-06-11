@@ -16,6 +16,10 @@ services:
       - db
     environment:
       - FLASK_ENV=development
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=banco_restaurante
     ports:
       - "5000:5000"
     volumes:

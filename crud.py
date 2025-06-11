@@ -1,12 +1,13 @@
 import mysql.connector
 import datetime
+import os
 
 def conectar_banco():
     return mysql.connector.connect(
-        host='db',  # <--- altere de 'localhost' para 'db'
-        user='root',
-        password='root',
-        database='banco_restaurante',
+        host=os.environ.get('DB_HOST', 'db'),
+        user=os.environ.get('DB_USER', 'root'),
+        password=os.environ.get('DB_PASSWORD', 'root'),
+        database=os.environ.get('DB_NAME', 'banco_restaurante'),
     )
 
 def criar_reserva_db(cursor, dataReserva, horaReserva, nomeCliente, quantidadePessoas, idMesaReserva):

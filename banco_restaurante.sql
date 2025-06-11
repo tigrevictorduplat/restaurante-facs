@@ -161,3 +161,39 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- Inserção de 10 mesas
+INSERT INTO `tb_mesas` (`idMesa`, `statusMesaOcupada`) VALUES
+(1, 0),
+(2, 0),
+(3, 0),
+(4, 0),
+(5, 0),
+(6, 0),
+(7, 0),
+(8, 0),
+(9, 0),
+(10, 0);
+
+-- Inserção de 20 reservas (datas entre 11/06/2025 e 11/07/2025, sem domingos, horários válidos e algumas reservas no mesmo dia com intervalo de pelo menos 2 horas)
+INSERT INTO `tb_reservas` (`idReserva`, `dataReserva`, `horaReserva`, `nomeCliente`, `quantidadePessoas`, `statusReservaConfirmada`, `idMesaReserva`) VALUES
+(1, '2025-06-11', '14:00:00', 'Ana Silva', 2, 1, 1),
+(2, '2025-06-11', '16:30:00', 'Bruno Souza', 4, 0, 2),
+(3, '2025-06-12', '19:00:00', 'Carlos Lima', 3, 1, 3),
+(4, '2025-06-12', '21:30:00', 'Daniela Rocha', 5, 0, 4),
+(5, '2025-06-13', '15:00:00', 'Eduardo Alves', 2, 1, 5),
+(6, '2025-06-13', '18:00:00', 'Fernanda Dias', 6, 0, 6),
+(7, '2025-06-14', '14:30:00', 'Gabriel Pinto', 2, 1, 7),
+(8, '2025-06-14', '17:00:00', 'Helena Costa', 4, 0, 8),
+(9, '2025-06-16', '20:00:00', 'Igor Martins', 3, 1, 9),
+(10, '2025-06-16', '22:30:00', 'Juliana Ramos', 2, 0, 10),
+(11, '2025-06-17', '14:00:00', 'Kleber Souza', 5, 1, 1),
+(12, '2025-06-17', '16:30:00', 'Larissa Melo', 2, 0, 2),
+(13, '2025-06-18', '19:00:00', 'Marcos Silva', 4, 1, 3),
+(14, '2025-06-18', '21:30:00', 'Nathalia Cruz', 3, 0, 4),
+(15, '2025-06-19', '15:00:00', 'Otávio Lima', 2, 1, 5),
+(16, '2025-06-19', '18:00:00', 'Patrícia Dias', 6, 0, 6),
+(17, '2025-06-20', '14:30:00', 'Quésia Pinto', 2, 1, 7),
+(18, '2025-06-20', '17:00:00', 'Rafael Costa', 4, 0, 8),
+(19, '2025-07-02', '20:00:00', 'Sabrina Martins', 3, 1, 9),
+(20, '2025-07-03', '19:00:00', 'Tiago Ramos', 2, 0, 10);
