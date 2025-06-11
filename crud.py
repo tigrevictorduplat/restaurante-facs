@@ -77,9 +77,7 @@ def verificar_disponibilidade_mesa_db(cursor, idMesaReserva, dataReserva, horaRe
         return {'disponivel': False, 'motivo': 'Já existe uma reserva para esta mesa, data e hora.'}
 
     # 3. Verificar se há reservas dentro do intervalo de 2 horas antes ou depois
-    # Converter horaReserva para datetime para poder calcular o intervalo
-    hora_obj = horaReserva
-    dt_reserva = dataReserva
+    dt_reserva = datetime.datetime.combine(dataReserva, horaReserva)
 
     # Calcular 2 horas antes e depois
     dt_inicio = (dt_reserva - datetime.timedelta(hours=2))
