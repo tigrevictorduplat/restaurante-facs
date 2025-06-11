@@ -2,6 +2,15 @@
 
 Este é um sistema completo para simular e gerenciar o processo de reservas em um restaurante fictício. Ele oferece uma API HTTP robusta para interação e interfaces de linha de comando para diferentes perfis de usuário (Atendente, Garçom, Gerente), tudo empacotado para fácil execução com Docker.
 
+## 👥 Integrantes
+
+- **Celso Argolo** - 12724148715
+- **Mateus Guirra** - 12724135176
+- **Victor Duplat Tigre** - 12724117641
+- **Victor Leôncio** - 12724128419
+- **Pedro Henrique Fernandes Santos** - 12724141308
+- **Felipe Borges dos Santos** - 12724148878
+
 ## ✨ Visão Geral do Projeto
 
 O objetivo principal deste projeto é demonstrar uma arquitetura de aplicação em três camadas:
