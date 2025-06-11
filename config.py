@@ -1,5 +1,3 @@
-# config.py
-
 # Informações de funcionamento do restaurante
 RESTAURANT_INFO = {
     "horario_abertura": "13:30:00",
